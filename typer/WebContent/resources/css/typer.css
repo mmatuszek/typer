@@ -1,0 +1,91 @@
+body {
+	font-family: 'Open Sans',sans-serif;
+	color: #666666;
+	font-size: 12px;
+	line-height: 1.54;
+}
+
+.row {
+	border-bottom: 1px solid #DCDCDC;
+	text-align: left;
+}
+
+.match-details {
+	text-align: left;
+	height: 80px;
+	display: table-cell;
+	vertical-align: middle;
+}
+
+.match-details div {
+	line-height: 1.54;
+}
+
+.group {
+	font-weight: 700;
+}
+
+.flag {
+	height: 32px;
+    width: 48px;
+}
+
+.team-name {
+	font-size: 27px;
+    vertical-align: middle;
+    margin-left: 10px;
+    margin-right: 10px;
+    color: #474747;
+}
+
+span.bet {
+	font-size: 27px;
+    vertical-align: middle;
+    font-style: italic;
+}
+
+span.points {
+	font-size: 18px;
+    vertical-align: middle;
+}
+
+input.bet {
+	width: 36px !important;
+	height: 36px !important;
+}
+
+button.submit-bet {
+	margin-left: 10px;
+}
+
+.score {
+	font-size: 27px;
+    color: #474747;
+    text-align: center;
+    height: 80px;
+    line-height: 80px;
+}
+
+.home {
+	text-align: left;
+	height: 80px;
+	line-height: 80px;
+}
+
+.away {
+	text-align: right;
+	height:80px;
+	line-height: 80px;
+}
+
+.points {
+	text-align: left;
+	height:80px;
+	line-height: 80px;
+}
+
+.bet {
+	height: 80px;
+	text-align: left;
+	line-height: 80px;
+}
