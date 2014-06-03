@@ -21,6 +21,8 @@ public class Bet {
 	private Integer betHome;
 	@Column(name = "score_away")
 	private Integer betAway;
+	@Column(name = "match_id")
+	private Integer matchId;
 
 	public int getId() {
 		return id;
@@ -47,10 +49,17 @@ public class Bet {
 		this.betAway = betAway;
 	}
 	
+	public Integer getMatchId() {
+		return matchId;
+	}
+	public void setMatchId(Integer matchId) {
+		this.matchId = matchId;
+	}
 	@Override
 	public String toString() {
-		return "Bet [id=" + id + ", user=" + user
-				+ ", betHome=" + betHome + ", betAway=" + betAway + "]";
+		return "Bet [id=" + id + ", user=" + user + ", betHome=" + betHome
+				+ ", betAway=" + betAway + ", matchId=" + matchId + "]";
 	}
+
 	
 }

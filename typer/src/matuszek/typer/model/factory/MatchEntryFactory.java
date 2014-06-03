@@ -20,7 +20,8 @@ public class MatchEntryFactory {
 			}
 		}
 		
-		MatchEntry entry = new MatchEntry().city(match.getCity())
+		MatchEntry entry = new MatchEntry().id(match.getId())
+				.city(match.getCity())
 				.dateTime(match.getDateTime())
 				.scoreAway(match.getScoreAway())
 				.scoreHome(match.getScoreHome())

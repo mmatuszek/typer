@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class MatchEntry {
 	
+	private int id;
 	private String teamHome;
 	private String teamAway;
 	private Integer scoreHome;
@@ -19,6 +20,10 @@ public class MatchEntry {
 	private Integer betAway;
 	private Integer betPoints;
 	
+	public MatchEntry id(int id) {
+		this.id = id;
+		return this;
+	}
 	public MatchEntry teamHome(String teamHome) {
 		this.teamHome = teamHome;
 		return this;
@@ -95,6 +100,12 @@ public class MatchEntry {
 	}
 	public void setBetPoints(Integer betPoints) {
 		this.betPoints = betPoints;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public int getId() {
+		return id;
 	}
 	public String getTeamHome() {
 		return teamHome;

@@ -1,7 +1,11 @@
 (function($) {
+	
+	$.ajaxSetup({
+		  contentType: "application/json; charset=utf-8"
+	});
 
-	var matchHtmlTemplate = '<div class="row"><div class="col-md-2"><div class="match-details"><div class="datetime">DATETIME_PLACEHOLDER</div><div class="group">GROUP_PLACEHOLDER</div><div class="stadium">STADIUM_PLACEHOLDER</div><div class="venue">VENUE_PLACEHOLDER</div></div></div><div class="col-md-3"><div class="home"><img class="flag" src="HOME_TEAM_FLAG_PLACEHOLDER"><span class="team-name">HOME_TEAM_NAME_PLACEHOLDER</span></div></div><div class="col-md-1"><div class="score"><span>SCORE_PLACEHOLDER</span></div></div><div class="col-md-3"><div class="away"><span class="team-name">AWAY_TEAM_NAME_PLACEHOLDER</span><img class="flag" src="AWAY_TEAM_FLAG_PLACEHOLDER"></div></div>BET_PLACEHOLDER';
-	var betFutureTemplate = '<div class="col-md-3"><div class="bet"><form class="form-inline" role="form"><input type="text" class="form-control bet" value="BET_HOME_PLACEHOLDER"/><span class="bet">:</span><input type="text" class="form-control bet" value="BET_AWAY_PLACEHOLDER"/><button type="button" class="btn btn-primary submit-bet">Zapisz</button></form></div>';
+	var matchHtmlTemplate = '<div class="row" id="ID_PLACEHOLDER"><div class="col-md-2"><div class="match-details"><div class="datetime">DATETIME_PLACEHOLDER</div><div class="group">GROUP_PLACEHOLDER</div><div class="stadium">STADIUM_PLACEHOLDER</div><div class="venue">VENUE_PLACEHOLDER</div></div></div><div class="col-md-3"><div class="home"><img class="flag" src="HOME_TEAM_FLAG_PLACEHOLDER"><span class="team-name">HOME_TEAM_NAME_PLACEHOLDER</span></div></div><div class="col-md-1"><div class="score"><span>SCORE_PLACEHOLDER</span></div></div><div class="col-md-3"><div class="away"><span class="team-name">AWAY_TEAM_NAME_PLACEHOLDER</span><img class="flag" src="AWAY_TEAM_FLAG_PLACEHOLDER"></div></div>BET_PLACEHOLDER';
+	var betFutureTemplate = '<div class="col-md-3"><div class="bet"><form class="form-inline" role="form"><input type="text" class="form-control bet betHome" value="BET_HOME_PLACEHOLDER"/><span class="bet">:</span><input type="text" class="form-control bet betAway" value="BET_AWAY_PLACEHOLDER"/><button type="button" class="btn btn-primary submit-bet">Zapisz</button></form></div>';
 	var betPastTemplate = '<div class="col-md-3"><div class="bet">BET_PLACEHOLDER</div></div></div>';
 	
 	var flagMap = {
@@ -30,16 +34,41 @@
 				$.each(data['matchEntry'], function(key, value) {
 					selector.append(getMatchHtml(value));
 				});
+				$('.submit-bet').click(function() {
+					$(this).addBet({
+						url: settings.url
+					});
+				});
 			},
 		});
 
+	};
+	
+	$.fn.addBet = function(options) {
+		
+		var betSelector = $(this).parents('div.bet');
+		var bet = new Object();
+		bet.betHome = betSelector.find('input.betHome').val();
+		bet.betAway = betSelector.find('input.betAway').val();
+		var matchId = betSelector.parents("div.row").attr('id');
+		
+		$.ajax({
+			url : options.url + "/" + matchId + "/bet",
+			type : "PUT",
+			data : JSON.stringify(bet),
+			success : function(data) {
+				alert('Bet updated');
+			}
+		});
+		
 	};
 	
 	function getMatchHtml(matchEntry) {
 		
 		var html = matchHtmlTemplate;
 		
-		return html.replace('DATETIME_PLACEHOLDER', $.formatDateTime('yy-mm-dd hh:ii', new Date(matchEntry.dateTime)))
+		return html.replace('ID_PLACEHOLDER', matchEntry.id)
+				.replace('DATETIME_PLACEHOLDER', $.formatDateTime('yy-mm-dd hh:ii', new Date(matchEntry.dateTime)))
 				.replace('GROUP_PLACEHOLDER', 'Grupa ' + matchEntry.group)
 				.replace('STADIUM_PLACEHOLDER', matchEntry.stadium)
 				.replace('VENUE_PLACEHOLDER', matchEntry.city)
