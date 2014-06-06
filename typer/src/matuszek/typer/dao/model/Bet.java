@@ -36,16 +36,16 @@ public class Bet {
 	public void setUser(User user) {
 		this.user = user;
 	}
-	public int getBetHome() {
+	public Integer getBetHome() {
 		return betHome;
 	}
-	public void setBetHome(int betHome) {
+	public void setBetHome(Integer betHome) {
 		this.betHome = betHome;
 	}
-	public int getBetAway() {
+	public Integer getBetAway() {
 		return betAway;
 	}
-	public void setBetAway(int betAway) {
+	public void setBetAway(Integer betAway) {
 		this.betAway = betAway;
 	}
 	

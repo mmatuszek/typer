@@ -21,7 +21,17 @@ public class MatchDao {
 		return query.getResultList();
 	}
 	
+	public Match getMatch(Integer matchId) {
+		
+		TypedQuery<Match> query = em.createQuery("SELECT m FROM Match m WHERE m.id = :matchId", Match.class);
+		query.setParameter("matchId", matchId);
+		
+		return query.getSingleResult();
+		
+	}
+	
 	public void updateBet(Bet bet) {
+		
 		TypedQuery<Bet> query = em.createQuery("SELECT b FROM Bet b WHERE b.user = :user AND b.matchId = :matchId", Bet.class);
 		query.setParameter("user", bet.getUser());
 		query.setParameter("matchId", bet.getMatchId());

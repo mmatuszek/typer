@@ -89,3 +89,7 @@ button.submit-bet {
 	text-align: left;
 	line-height: 80px;
 }
+
+#matches {
+	text-align: center;
+}

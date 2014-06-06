@@ -13,15 +13,17 @@
 <link href="resources/css/bootstrap.min.css" rel="stylesheet" />
 
 <!-- Custom styles for this template -->
-<link href="${pageContext.request.contextPath}/resources/css/typer.css" rel="stylesheet" />
+<link href="resources/css/typer.css" rel="stylesheet" />
 
 <!-- jQuery -->
-<script src="${pageContext.request.contextPath}/resources/js/jquery.min.js"></script>
-<script src="${pageContext.request.contextPath}/resources/js/jquery.formatDateTime.min.js"></script>
+<script type="text/javascript" src="resources/js/jquery.min.js"></script>
+<script type="text/javascript" src="resources/js/bootstrap.min.js"></script>
+<script type="text/javascript"
+	src="resources/js/jquery.formatDateTime.min.js"></script>
 
 <!-- Custom JS -->
-<script src="${pageContext.request.contextPath}/resources/js/typer.match.js"></script>
-<script src="${pageContext.request.contextPath}/resources/js/main.js"></script>
+<script src="resources/js/typer.match.js"></script>
+<script src="resources/js/main.js"></script>
 
 <!-- Just for debugging purposes. Don't actually copy this line! -->
 <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -36,9 +38,14 @@
 <body>
 
 	<div class="container">
-		<div id="matches"></div>
+		<div id="header" class="panel panel-default">
+			<img src="resources/images/busy_30.gif">
+		</div>
+		<div id="messages"></div>
+		<div id="matches">
+			<img src="resources/images/busy_80.gif">&nbsp;
+		</div>
 	</div>
 	<!-- /container -->
-
 </body>
 </html>
