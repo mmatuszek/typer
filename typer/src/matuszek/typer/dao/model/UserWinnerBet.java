@@ -1,5 +1,3 @@
-
-
 package matuszek.typer.dao.model;
 
 import javax.persistence.Column;
@@ -11,7 +9,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "winner_bets")
-public class WinnerBet {
+public class UserWinnerBet {
 
 	@Id
 	@Column(name = "bet_id")
@@ -19,17 +17,11 @@ public class WinnerBet {
 	@OneToOne(optional = false)
     @JoinColumn(name = "team_name") 
 	private Team team;
-	@OneToOne(optional = false)
-    @JoinColumn(name = "username") 
-	private User user;
 	public int getId() {
 		return id;
 	}
 	public Team getTeam() {
 		return team;
-	}
-	public User getUser() {
-		return user;
 	}
 	public void setId(int id) {
 		this.id = id;
@@ -37,12 +29,8 @@ public class WinnerBet {
 	public void setTeam(Team team) {
 		this.team = team;
 	}
-	public void setUser(User user) {
-		this.user = user;
-	}
 	@Override
 	public String toString() {
-		return "WinnerBet [id=" + id + ", team=" + team + ", user=" + user
-				+ "]";
+		return "UserWinnerBet [id=" + id + ", team=" + team + "]";
 	}
 }

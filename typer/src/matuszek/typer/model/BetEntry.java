@@ -7,6 +7,8 @@ public class BetEntry {
 
 	private Integer betHome;
 	private Integer betAway;
+	private String user;
+	private Integer points;
 
 	public Integer getBetHome() {
 		return betHome;
@@ -24,9 +26,25 @@ public class BetEntry {
 		this.betAway = betAway;
 	}
 
+	public String getUser() {
+		return user;
+	}
+
+	public void setUser(String user) {
+		this.user = user;
+	}
+
+	public Integer getPoints() {
+		return points;
+	}
+
+	public void setPoints(Integer points) {
+		this.points = points;
+	}
+
 	@Override
 	public String toString() {
-		return "BetEntry [betHome=" + betHome + ", betAway=" + betAway + "]";
+		return "BetEntry [betHome=" + betHome + ", betAway=" + betAway + ", user=" + user + ", points=" + "]";
 	}
 
 }

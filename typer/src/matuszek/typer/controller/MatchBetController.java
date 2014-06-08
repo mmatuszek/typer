@@ -22,6 +22,7 @@ import matuszek.typer.dao.model.Match;
 import matuszek.typer.dao.model.factory.BetFactory;
 import matuszek.typer.model.BetEntry;
 import matuszek.typer.model.MatchEntry;
+import matuszek.typer.model.factory.BetEntryFactory;
 import matuszek.typer.model.factory.MatchEntryFactory;
 
 @Stateless
@@ -36,7 +37,7 @@ public class MatchBetController {
 	public List<MatchEntry> getMatches(@Context SecurityContext context) {
 		
 		List<MatchEntry> returnedList = new ArrayList<MatchEntry>();
-		
+
 		for (Match m : dao.getMatches()) {
 			returnedList.add(MatchEntryFactory.createEntry(m, context.getUserPrincipal().getName()));
 		}
@@ -50,6 +51,21 @@ public class MatchBetController {
 	@Produces("application/json")
 	public MatchEntry getMatch(@PathParam("id") String id, @Context SecurityContext ctx) {
 		return MatchEntryFactory.createEntry(dao.getMatch(Integer.valueOf(id)), ctx.getUserPrincipal().getName());
+	}
+	
+	@GET
+	@Path("/{id}/bet/all")
+	@Produces("application/json")
+	public List<BetEntry> getAllBets(@PathParam("id") Integer matchId, @Context SecurityContext context) {
+		
+		Match match = dao.getMatch(matchId);
+		
+		if (match.getDateTime().after(new Date())) {
+			throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST).entity("Typy innych graczy są dostępne dopiero po rozpoczęciu meczu").build());
+		}
+		
+		return BetEntryFactory.createBetList(match.getBetList(), match);
+		
 	}
 	
 	@PUT

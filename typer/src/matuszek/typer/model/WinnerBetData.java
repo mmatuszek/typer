@@ -11,13 +11,25 @@ public class WinnerBetData {
 	private List<TeamEntry> teams;
 	private TeamEntry bet;
 	private TeamEntry winner;
+	private Integer points;
+	private Date deadline;
+	
 	public TeamEntry getWinner() {
 		return winner;
 	}
 	public void setWinner(TeamEntry winner) {
 		this.winner = winner;
 	}
-	private Date deadline;
+	public Integer getPoints() {
+		return points;
+	}
+	public void setPoints(Integer points) {
+		this.points = points;
+	}
+	public WinnerBetData points(Integer points) {
+		this.points = points;
+		return this;
+	}
 	public List<TeamEntry> getTeams() {
 		return teams;
 	}
@@ -55,7 +67,7 @@ public class WinnerBetData {
 	@Override
 	public String toString() {
 		return "WinnerBetData [teams=" + teams + ", bet=" + bet
-				+ ", deadline=" + deadline + ", winner=" + winner + "]";
+				+ ", deadline=" + deadline + ", winner=" + winner + ", points=" + points + "]";
 	}
 	
 	
