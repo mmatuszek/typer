@@ -11,6 +11,7 @@
 <title>Typer</title>
 <!-- Bootstrap core CSS -->
 <link href="resources/css/bootstrap.min.css" rel="stylesheet" />
+<link href="resources/css/docs.min.css" rel="stylesheet" />
 
 <!-- Custom styles for this template -->
 <link href="resources/css/typer.css" rel="stylesheet" />
@@ -35,7 +36,7 @@
     <![endif]-->
 </head>
 
-<body>
+<body data-twttr-rendered="true">
 	<header id="top" class="navbar navbar-static-top bs-docs-nav"
 		role="banner">
 		<div class="container">
@@ -46,30 +47,36 @@
 						class="icon-bar"></span> <span class="icon-bar"></span> <span
 						class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="../">Bootstrap</a>
 			</div>
 			<nav class="collapse navbar-collapse bs-navbar-collapse"
 				role="navigation">
 				<ul class="nav navbar-nav">
-					<li class="active"></li>
+					<li class="active"><a href="#">Typowanie</a></li>
+					<li><a href="#">Historia</a></li>
+					<li><a href="#">Ranking</a></li>
+					<li><a href="#">Regulamin</a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
-					<li></li>
+					<li><a href="#">Mój profil</a></li>
 				</ul>
 			</nav>
 		</div>
 	</header>
-	<div id="content" class="bs-docs-header">
+	<div id="banner" class="bs-docs-header">
 		<div class="container">
-			<p>Zabawa w typowanie wyników Mistrzostw Świata w Brazylii</p>
-			<div id="carbonads-container">
-				<div class="carbonad"></div>
+			<div class="col-md-2">
+				<img src="resources/images/fuleco.png" style="height: 200px" />
 			</div>
 		</div>
 	</div>
 	<div class="container">
-		<div id="header" class="panel panel-default">
-			<img src="resources/images/busy_30.gif">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<h3 class="panel-title">Typowany mistrz</h3>
+			</div>
+			<div class="panel-body" id="winner-bet">
+				<img src="resources/images/busy_30.gif">
+			</div>
 		</div>
 		<div id="messages"></div>
 		<div id="matches">

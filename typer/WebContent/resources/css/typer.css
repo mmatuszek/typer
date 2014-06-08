@@ -1,13 +1,13 @@
 body {
 	font-family: 'Open Sans',sans-serif;
 	color: #666666;
-	font-size: 12px;
 	line-height: 1.54;
 }
 
 .row {
 	border-bottom: 1px solid #DCDCDC;
 	text-align: left;
+	font-size: 12px;
 }
 
 .match-details {
@@ -45,7 +45,7 @@ span.bet {
 }
 
 span.points {
-	font-size: 18px;
+	font-size: 22px;
     vertical-align: middle;
 }
 
@@ -90,6 +90,16 @@ button.submit-bet {
 	line-height: 80px;
 }
 
+.navbar {
+	margin-bottom: 0px;
+}
+
 #matches {
 	text-align: center;
+}
+
+#banner{
+	background: url("../images/background.jpg") no-repeat scroll right -250px #FFFFFF;
+    height: 230px;
+    padding-top: 50px;
 }
