@@ -34,7 +34,7 @@ public class Match {
 	private String city;
 	@Column(name = "stadium")
 	private String stadium;
-	@Column(name = "group_letter")
+	@Column(name = "type")
 	private String group;
 	@OneToMany
 	@JoinColumn(name = "match_id", referencedColumnName = "match_id")

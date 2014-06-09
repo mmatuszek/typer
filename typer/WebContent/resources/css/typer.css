@@ -4,10 +4,19 @@ body {
 	line-height: 1.54;
 }
 
-.row {
+tr {
 	border-bottom: 1px solid #DCDCDC;
 	text-align: left;
 	font-size: 12px;
+}
+
+.table-borderless {
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.table-borderless td {
+    padding: 10px;
 }
 
 .match-details {
@@ -28,6 +37,12 @@ body {
 .flag {
 	height: 32px;
     width: 48px;
+    border: 1px solid #C7C6C6;
+}
+
+.navbar-nav p {
+	padding-bottom: 15px;
+    padding-top: 15px;
 }
 
 .team-name {
@@ -45,11 +60,19 @@ span.bet {
 }
 
 span.points {
-	font-size: 22px;
     vertical-align: middle;
+    margin-right: 10px;
 }
 
-input.bet {
+.bet span.points, span.winner {
+	font-size: 22px;
+}
+
+#match-bets .points, #match-bets .user, #winner-bets .points, #winner-bets .user  {
+	font-size: 16px;
+}
+
+.bet-input {
 	width: 46px !important;
 	height: 36px !important;
 }
@@ -78,12 +101,6 @@ button.submit-bet {
 	line-height: 80px;
 }
 
-.points {
-	text-align: left;
-	height:80px;
-	line-height: 80px;
-}
-
 .bet {
 	height: 80px;
 	text-align: left;
@@ -94,12 +111,53 @@ button.submit-bet {
 	margin-bottom: 0px;
 }
 
+#winner-bet {
+	padding-top: 20px;
+	font-size: 22px;
+}
+
 #matches {
 	text-align: center;
 }
 
-#banner{
+.other-bets {
+	font-size: 12px;
+}
+
+#winner-bet-deadline {
+	font-size: 12px;
+}
+
+.scrollable-menu {
+    height: auto;
+    max-height: 200px;
+    overflow-x: hidden;
+}
+
+#banner {
 	background: url("../images/background.jpg") no-repeat scroll right -250px #FFFFFF;
     height: 230px;
-    padding-top: 50px;
+    padding-top: 0px;
+}
+
+.busy {
+	margin-left: 10px;
+}
+
+#fuleco {
+	margin-top: 50px;
+}
+
+#cup {
+	margin-top: 45px;
+}
+
+#banner-text {
+	margin-top: 50px;
+}
+
+#banner-text p {
+	color: #FFFF00; 
+	font-weight: bold;
+	margin-right: 100px;	
 }

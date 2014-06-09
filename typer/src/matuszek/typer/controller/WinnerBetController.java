@@ -36,20 +36,30 @@ public class WinnerBetController {
 	@Produces("application/json")
 	public WinnerBetData getWinnerBet(@Context SecurityContext ctx) {
 
-		Winner winnerDao = dao.getWinner();
-		Date deadline = winnerDao.getDeadline();
-		TeamEntry teamBet = getTeamBet(ctx.getUserPrincipal().getName());
-		TeamEntry winner = winnerDao.getTeam() != null ? new TeamEntry(
-				winnerDao.getTeam().getName()) : null;
+		try {
 
-		List<TeamEntry> teams = new ArrayList<TeamEntry>();
+			Winner winnerDao = dao.getWinner();
+			Date deadline = winnerDao.getDeadline();
+			TeamEntry teamBet = getTeamBet(ctx.getUserPrincipal().getName());
+			TeamEntry winner = winnerDao.getTeam() != null ? new TeamEntry(
+					winnerDao.getTeam().getName()) : null;
 
-		for (Team team : dao.getTeams()) {
-			teams.add(new TeamEntry(team.getName()));
+			List<TeamEntry> teams = new ArrayList<TeamEntry>();
+
+			for (Team team : dao.getTeams()) {
+				teams.add(new TeamEntry(team.getName()));
+			}
+
+			return new WinnerBetData().bet(teamBet).deadline(deadline)
+					.teams(teams).winner(winner);
+			
+		} catch (WebApplicationException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new WebApplicationException(Response
+					.status(Response.Status.INTERNAL_SERVER_ERROR)
+					.entity("Błąd: " + e.getLocalizedMessage()).build());
 		}
-
-		return new WinnerBetData().bet(teamBet).deadline(deadline).teams(teams)
-				.winner(winner);
 
 	}
 
@@ -58,24 +68,38 @@ public class WinnerBetController {
 	@Produces("application/json")
 	public List<WinnerBetEntry> getAllBets() {
 
-		if (dao.getWinner().getDeadline().after(new Date())) {
-			throw new WebApplicationException(
-					Response.status(Response.Status.BAD_REQUEST)
-							.entity("Typy innych graczy dostępne po rozpoczęciu turnieju.")
-							.build());
+		try {
+
+			if (dao.getWinner().getDeadline().after(new Date())) {
+				throw new WebApplicationException(
+						Response.status(Response.Status.BAD_REQUEST)
+								.entity("Typy innych graczy dostępne po rozpoczęciu turnieju.")
+								.build());
+			}
+
+			Winner winner = dao.getWinner();
+
+			List<WinnerBetEntry> list = new ArrayList<>();
+
+			for (WinnerBet bet : dao.getWinnerBets()) {
+				list.add(new WinnerBetEntry(bet.getTeam().getName(), bet
+						.getUser().getFirstName()
+						+ " "
+						+ bet.getUser().getLastName(),
+						WinnerPointsCalculator.calculateWinnerPoints(
+								bet.getTeam(), winner.getTeam()), bet.getUser()
+								.getUsername()));
+			}
+
+			return list;
+
+		} catch (WebApplicationException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new WebApplicationException(Response
+					.status(Response.Status.INTERNAL_SERVER_ERROR)
+					.entity("Błąd: " + e.getLocalizedMessage()).build());
 		}
-
-		Winner winner = dao.getWinner();
-
-		List<WinnerBetEntry> list = new ArrayList<>();
-
-		for (WinnerBet bet : dao.getWinnerBets()) {
-			list.add(new WinnerBetEntry(bet.getTeam().getName(), bet.getUser()
-					.getUsername(), WinnerPointsCalculator
-					.calculateWinnerPoints(bet.getTeam(), winner.getTeam())));
-		}
-
-		return list;
 
 	}
 
@@ -84,16 +108,27 @@ public class WinnerBetController {
 	public TeamEntry updateWinnerBet(@Context SecurityContext ctx,
 			TeamEntry team) {
 
-		if (dao.getWinner().getDeadline().before(new Date())) {
-			throw new WebApplicationException(
-					Response.status(Response.Status.BAD_REQUEST)
-							.entity("Typ odrzucony. Termin przyjmowania tego zakładu minął.")
-							.build());
+		try {
+
+			if (dao.getWinner().getDeadline().before(new Date())) {
+				throw new WebApplicationException(
+						Response.status(Response.Status.BAD_REQUEST)
+								.entity("Typ odrzucony. Termin przyjmowania tego zakładu minął.")
+								.build());
+			}
+
+			dao.updateBet(WinnerBetFactory.create(team, ctx.getUserPrincipal()
+					.getName()));
+			return team;
+
+		} catch (WebApplicationException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new WebApplicationException(Response
+					.status(Response.Status.INTERNAL_SERVER_ERROR)
+					.entity("Błąd: " + e.getLocalizedMessage()).build());
 		}
 
-		dao.updateBet(WinnerBetFactory.create(team, ctx.getUserPrincipal()
-				.getName()));
-		return team;
 	}
 
 	private TeamEntry getTeamBet(String username) {

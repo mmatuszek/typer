@@ -19,7 +19,8 @@ public class BetEntryFactory {
 
 		entry.setBetAway(bet.getBetAway());
 		entry.setBetHome(bet.getBetHome());
-		entry.setUser(bet.getUser().getUsername());
+		entry.setUsername(bet.getUser().getUsername());
+		entry.setUser(bet.getUser().getFirstName() + " " + bet.getUser().getLastName());
 		entry.setPoints(BetPointsCalculator.calculateBetPoints(
 				bet.getBetHome(), bet.getBetAway(), match.getScoreHome(),
 				match.getScoreAway()));

@@ -16,6 +16,7 @@ public class UserDao {
 	private EntityManager em;
 	
 	public List<UserStanding> getUsers() {
+		em.getEntityManagerFactory().getCache().evictAll();
 		TypedQuery<UserStanding> query = em.createQuery("SELECT u FROM UserStanding u", UserStanding.class);
 		return query.getResultList();
 	}

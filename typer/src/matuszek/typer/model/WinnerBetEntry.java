@@ -7,16 +7,19 @@ public class WinnerBetEntry {
 
 	private String teamName;
 	private String user;
+	private String username;
 	private Integer points;
 
 	public WinnerBetEntry() {
-		
+
 	}
-	
-	public WinnerBetEntry(String teamName, String user, Integer points) {
+
+	public WinnerBetEntry(String teamName, String user, Integer points,
+			String username) {
 		this.teamName = teamName;
 		this.user = user;
 		this.points = points;
+		this.username = username;
 	}
 
 	public Integer getPoints() {
@@ -43,9 +46,18 @@ public class WinnerBetEntry {
 		this.points = points;
 	}
 
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
 	@Override
 	public String toString() {
-		return "WinnerBetEntry [teamName=" + teamName + ", user=" + user + ", points=" + points + "]";
+		return "WinnerBetEntry [teamName=" + teamName + ", user=" + user
+				+ ", points=" + points + ", username=" + username + "]";
 	}
 
 }

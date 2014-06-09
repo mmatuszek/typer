@@ -52,35 +52,63 @@
 				role="navigation">
 				<ul class="nav navbar-nav">
 					<li class="active"><a href="#">Typowanie</a></li>
-					<li><a href="#">Historia</a></li>
-					<li><a href="#">Ranking</a></li>
-					<li><a href="#">Regulamin</a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
-					<li><a href="#">Mój profil</a></li>
+					<li class="dropdown"><a href="#" data-toggle="dropdown"
+						role="button"> <%=request.getUserPrincipal().getName()%></a>
+						<ul id="menu3" class="dropdown-menu" aria-labelledby="drop6"
+							role="menu">
+							<li role="presentation"><a id="logout" href="#"
+								role="menu-item">Wyloguj</a></li>
+						</ul></li>
 				</ul>
 			</nav>
 		</div>
 	</header>
 	<div id="banner" class="bs-docs-header">
 		<div class="container">
-			<div class="col-md-2">
+			<div class="col-md-2" id="fuleco">
 				<img src="resources/images/fuleco.png" style="height: 200px" />
+			</div>
+			<div class="col-md-8" id="banner-text">
+				<h1>Typowanie</h1>
+				<p>Wytypuj wyniki
+					meczów oraz zwycięzcę turnieju. Zobacz jak typowali inni.</p>
+			</div>
+			<div class="col-md-2" id="cup">
+				<img src="resources/images/cup.png" style="height: 200px" />
 			</div>
 		</div>
 	</div>
-	<div class="container">
-		<div class="panel panel-primary">
-			<div class="panel-heading">
-				<h3 class="panel-title">Typowany mistrz</h3>
-			</div>
-			<div class="panel-body" id="winner-bet">
-				<img src="resources/images/busy_30.gif">
-			</div>
-		</div>
+
+	<div id="bet-tabs" class="container">
 		<div id="messages"></div>
-		<div id="matches">
-			<img src="resources/images/busy_80.gif">&nbsp;
+		<ul class="nav nav-tabs">
+			<li class="active"><a id="future-tab" href="#future">Zaplanowane</a></li>
+			<li><a id="current-tab" href="#current">Trwające</a></li>
+			<li><a id="finished-tab" href="#finished">Zakończone</a></li>
+			<li><a id="winner-tab" href="#winner">Mistrz</a></li>
+		</ul>
+		<div id="bet-tab-content" class="tab-content">
+			<div id="future" class="tab-pane fade active in">
+				<table class="table-borderless" id="future-matches">
+				</table>
+			</div>
+			<div id="current" class="tab-pane fade">
+				<table class="table-borderless" id="current-matches">
+				</table>
+			</div>
+			<div id="finished" class="tab-pane fade">
+				<table class="table-borderless" id="finished-matches">
+				</table>
+			</div>
+			<div id="winner" class="tab-pane fade">
+				<div id="winner-bet">
+					<div style="text-align: center">
+						<img src="resources/images/busy_80.gif">
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 	<div class="modal fade" id="match-bets" tabindex="-1" role="dialog"
@@ -90,9 +118,17 @@
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal"
 						aria-hidden="true">&times;</button>
-					<h4 class="modal-title" id="myModalLabel">Modal title</h4>
+					<h4 class="modal-title" id="myModalLabel">Typy wszystkich
+						graczy</h4>
 				</div>
-				<div class="modal-body">...</div>
+				<div class="modal-body">
+					<table class="table-borderless">
+						<tr>
+							<td style="text-align: center"><img
+								src="resources/images/busy_80.gif"></td>
+						</tr>
+					</table>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -103,9 +139,17 @@
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal"
 						aria-hidden="true">&times;</button>
-					<h4 class="modal-title" id="myModalLabel">Modal title</h4>
+					<h4 class="modal-title" id="myModalLabel">Mistrzostwo Świata -
+						Typy</h4>
 				</div>
-				<div class="modal-body">...</div>
+				<div class="modal-body">
+					<table class="table-borderless">
+						<tr>
+							<td style="text-align: center"><img
+								src="resources/images/busy_80.gif"></td>
+						</tr>
+					</table>
+				</div>
 			</div>
 		</div>
 	</div>

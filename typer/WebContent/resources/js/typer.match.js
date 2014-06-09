@@ -4,16 +4,46 @@
 		contentType : "application/json; charset=utf-8"
 	});
 
-	var matchHtmlTemplate = '<div class="row" id="ID_PLACEHOLDER"><div class="col-md-2"><div class="match-details"><div class="datetime" data-datetime="ORIGINAL_DATETIME_PLACEHOLDER">DATETIME_PLACEHOLDER</div><div class="group">GROUP_PLACEHOLDER</div><div class="stadium">STADIUM_PLACEHOLDER</div><div class="venue">VENUE_PLACEHOLDER</div></div></div><div class="col-md-3"><div class="home"><img class="flag" src="HOME_TEAM_FLAG_PLACEHOLDER"><span class="team-name">HOME_TEAM_NAME_PLACEHOLDER</span></div></div><div class="col-md-1"><div class="score"><span>SCORE_PLACEHOLDER</span></div></div><div class="col-md-3"><div class="away"><span class="team-name">AWAY_TEAM_NAME_PLACEHOLDER</span><img class="flag" src="AWAY_TEAM_FLAG_PLACEHOLDER"></div></div><div class="col-md-3">BET_PLACEHOLDER</div></div>';
-	var betFutureTemplate = '<div class="bet"><form class="form-inline" role="form"><input type="text" class="form-control bet betHome" value="BET_HOME_PLACEHOLDER"/><span class="bet">:</span><input type="text" class="form-control bet betAway" value="BET_AWAY_PLACEHOLDER"/><button type="button" class="btn btn-primary submit-bet">Zapisz</button></form></div>';
-	var betPastTemplate = '<div class="bet">BET_PLACEHOLDER<button class="btn btn-primary btn-lg other-bets" data-toggle="modal" data-target="#match-bets">Wszystkie typy</button></div>';
-	var winnerBetFutureTemplate = '<div class="col-md-2"><div class="input-group"><input id="winner-bet" type="text" disabled class="form-control" value="ORIGINAL_BET_PLACEHOLDER"><div class="input-group-btn"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">&nbsp;<span class="caret"></span></button><ul id="team-list" class="dropdown-menu pull-right">WINNER_LIST_PLACEHOLDER</ul></div></div></div><div class="col-md-2"><button type="button" class="btn btn-primary submit-winner-bet">Zapisz</button></div><div class="col-md-2"><div id="winner-bet-deadline" data-datetime="ORIGINAL_DEADLINE_PLACEHOLDER">DEADLINE_PLACEHOLDER</div></div>';
-	var winnerBetPastTemplate = 'WINNER_PLACEHOLDER<br/><a href="#" class="other-winner-bets" data-toggle="modal" data-target="#winner-bets">Wszystkie typy</a></div>';
+	var busyHtml = '<tr><td style="text-align: center"><img src="resources/images/busy_80.gif"></td></tr>';
+	var winnerBusyHtml = '<div style="text-align: center"><img src="resources/images/busy_80.gif"></div>';
+	var matchHtmlTemplate = '<tr id="ID_PLACEHOLDER"><td><div class="match-details"><div class="datetime" data-datetime="ORIGINAL_DATETIME_PLACEHOLDER">DATETIME_PLACEHOLDER</div><div class="group">GROUP_PLACEHOLDER</div><div class="stadium">STADIUM_PLACEHOLDER</div><div class="venue">VENUE_PLACEHOLDER</div></div></td><td><div class="home"><img class="flag" src="HOME_TEAM_FLAG_PLACEHOLDER"><span class="team-name">HOME_TEAM_NAME_PLACEHOLDER</span></div></td><td><div class="score"><span>SCORE_PLACEHOLDER</span></div></td><td><div class="away"><span class="team-name">AWAY_TEAM_NAME_PLACEHOLDER</span><img class="flag" src="AWAY_TEAM_FLAG_PLACEHOLDER"></div></td><td style="width: 250px">BET_PLACEHOLDER</td></tr>';
+	var betFutureTemplate = '<div class="bet"><form class="form-inline" role="form"><input type="text" class="form-control bet-input betHome numbers-only" value="BET_HOME_PLACEHOLDER"/><span class="bet">:</span><input type="text" class="form-control bet-input betAway numbers-only" value="BET_AWAY_PLACEHOLDER"/><button type="button" class="btn btn-primary submit-bet">Zapisz</button></form></div>';
+	var betPastTemplate = '<div class="bet">BET_PLACEHOLDER<a href="javascript:void(0);" class="other-bets" data-toggle="modal" data-target="#match-bets">Wszystkie typy</a></div>';
+	var winnerBetFutureTemplate = '<div><div class="col-md-3"><div class="input-group"><input type="text" disabled class="form-control" value="ORIGINAL_BET_PLACEHOLDER"><div class="input-group-btn"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">&nbsp;<span class="caret"></span></button><ul id="team-list" class="dropdown-menu pull-right scrollable-menu">WINNER_LIST_PLACEHOLDER</ul></div></div></div><div class="col-md-2"><button type="button" class="btn btn-primary submit-winner-bet">Zapisz</button></div></div><div class="col-md-8" id="winner-bet-deadline" data-datetime="ORIGINAL_DEADLINE_PLACEHOLDER" style="font-size: 12px">Typ przyjmowany do: DEADLINE_PLACEHOLDER</div>';
+	var winnerBetPastTemplate = 'WINNER_PLACEHOLDER&nbsp;<span><a href="javascript:void(0);" class="other-bets" data-toggle="modal" data-target="#winner-bets">Wszystkie typy</a><span></div>';
 	var flagMap = {
-		'Brazylia' : 'bra.png',
 		'Chorwacja' : 'cro.png',
 		'Meksyk' : 'mex.png',
-		'Kamerun' : 'cmr.png'
+		'Algieria' : 'alg.png',
+		'Argentyna' : 'arg.png',
+		'Australia' : 'aus.png',
+		'Belgia' : 'bel.png',
+		'Bośnia i Herc.' : 'bih.png',
+		'Brazylia' : 'bra.png',
+		'Chile' : 'chi.png',
+		'WKS' : 'civ.png',
+		'Kamerun' : 'cmr.png',
+		'Kolumbia' : 'col.png',
+		'Kostaryka' : 'crc.png',
+		'Ekwador' : 'ecu.png',
+		'Anglia' : 'eng.png',
+		'Hiszpania' : 'esp.png',
+		'Francja' : 'fra.png',
+		'Niemcy' : 'ger.png',
+		'Ghana' : 'gha.png',
+		'Grecja' : 'gre.png',
+		'Honduras' : 'hon.png',
+		'Iran' : 'irn.png',
+		'Włochy' : 'ita.png',
+		'Japonia' : 'jpn.png',
+		'Korea Płd.' : 'kor.png',
+		'Holandia' : 'ned.png',
+		'Nigeria' : 'nga.png',
+		'Portugalia' : 'por.png',
+		'Rosja' : 'rus.png',
+		'Szwajcaria' : 'sui.png',
+		'Urugwaj' : 'uru.png',
+		'USA' : 'usa.png'
 	};
 
 	var pointsTemplateMap = {
@@ -34,16 +64,6 @@
 
 	};
 
-	var showSuccessMessage = function(message) {
-
-		var alertTemplate = '<div class="alert alert-success fade in"><button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button><p>MESSAGE_PLACEHOLDER</p></div>';
-
-		$('#messages').append(
-				alertTemplate.replace('MESSAGE_PLACEHOLDER', message));
-		$('.alert').alert();
-
-	};
-
 	$.fn.addWinnerBetDropdown = function(options) {
 
 		var settings = $.extend({}, options);
@@ -52,7 +72,7 @@
 
 		$.fn.addSelectAction = function() {
 			$(this).click(function() {
-				$('#winner-bet').val($(this).text());
+				$('#winner-bet input').val($(this).text());
 			});
 		};
 
@@ -104,15 +124,18 @@
 
 		$.fn.displayWinnerBets = function() {
 
-			var selector = $(this).find('.modal-body');
+			var selector = $(this).find('table');
 			selector.empty();
+			selector.html(winnerBusyHtml);
 
 			$.ajax({
 				url : settings.url + "/all",
 				type : "GET",
 				success : function(data) {
+					selector.empty();
 					$.each(data, function(key, value) {
-						selector.append('<div>' + pointsTemplateMap[value.points].replace('CONTENT_PLACEHOLDER', (value.teamName ? value.teamName : '')) + ' - ' + value.user + '</div>');
+						selector.append('<tr><td>' + pointsTemplateMap[value.points].replace('CONTENT_PLACEHOLDER', (value.teamName ? value.teamName : '') + '</td><td><div class="user">' + value.username
+								+ '</div></td><td><div class="user">' + value.user + '</div></tr>'));
 					});
 				},
 				error : function(data) {
@@ -125,16 +148,17 @@
 		$.fn.saveWinnerBet = function() {
 
 			var bet = new Object();
-			bet.name = $('#winner-bet').val();
+			bet.name = $('#winner-bet input').val();
 
 			$.ajax({
 				url : settings.url,
 				type : "PUT",
 				data : JSON.stringify(bet),
 				success : function(data) {
-					showSuccessMessage('Typ zapisany');
+					$('#winner-bet .busy').remove();
 				},
 				error : function(data) {
+					$('#winner-bet .busy').remove();
 					showErrorMessage(data.responseText);
 				}
 			});
@@ -148,7 +172,7 @@
 
 			var stopBet = function() {
 
-				var betSelector = $('#winner-bet-deadline').parents('div.row');
+				var betSelector = $('#winner-bet');
 				betSelector
 						.html('<img src="resources/images/busy_30.gif">&nbsp;');
 
@@ -170,6 +194,9 @@
 
 		};
 
+		selector.empty();
+		selector.html(winnerBusyHtml);
+		
 		$.ajax({
 			url : settings.url,
 			success : function(data) {
@@ -178,10 +205,12 @@
 				selector.append(html);
 				$('li.team').addSelectAction();
 				$('.submit-winner-bet').click(function() {
+					$(this).parent().find('.busy').remove();
+					$(this).parent().append('<img class="busy" src="resources/images/busy_30.gif">');
 					$(this).saveWinnerBet();
 				});
 				$('.submit-winner-bet').setBetTimeout();
-				$('.other-winner-bets').click(function() {
+				$('#winner-bet .other-bets').click(function() {
 					$('#winner-bets').displayWinnerBets();
 				});
 			},
@@ -207,7 +236,7 @@
 					'DATETIME_PLACEHOLDER',
 					$.formatDateTime('yy-mm-dd hh:ii', new Date(
 							matchEntry.dateTime))).replace('GROUP_PLACEHOLDER',
-					'Grupa ' + matchEntry.group).replace('STADIUM_PLACEHOLDER',
+					matchEntry.group).replace('STADIUM_PLACEHOLDER',
 					matchEntry.stadium).replace('VENUE_PLACEHOLDER',
 					matchEntry.city).replace('HOME_TEAM_FLAG_PLACEHOLDER',
 					'resources/images/' + flagMap[matchEntry.teamHome])
@@ -262,19 +291,23 @@
 
 		$.fn.displayMatchBets = function(matchId) {
 
-			var selector = $(this).find('.modal-body');
+			var selector = $(this).find('table');
 			selector.empty();
+			selector.html(busyHtml);
 
 			$.ajax({
 				url : settings.url + "/" + matchId + "/bet/all",
 				type : "GET",
 				success : function(data) {
-					$.each(data, function(key, value) {
-						selector
-								.append('<div>' + pointsTemplateMap[value.points].replace('CONTENT_PLACEHOLDER', ((value.betHome && value.betAway) ? value.betHome + ':'
-										+ value.betAway : '')) + ' - ' + value.user
-										+ '</div>');
-					});
+					selector.empty();
+					if (data) {
+						$.each(data['betEntry'], function(key, value) {
+							selector
+									.append('<tr><td>' + pointsTemplateMap[value.points].replace('CONTENT_PLACEHOLDER', ((value.betHome && value.betAway) ? value.betHome + ':'
+											+ value.betAway : '')) + '</td><td><div class="user">' + value.username
+											+ '</div></td><td><div class="user">' + value.user + '</div></tr>');
+						});
+					}
 				},
 				error : function(data) {
 					showErrorMessage(data.responseText);
@@ -289,17 +322,25 @@
 			var bet = new Object();
 			bet.betHome = betSelector.find('input.betHome').val();
 			bet.betAway = betSelector.find('input.betAway').val();
-			var matchId = betSelector.parents("div.row").attr('id');
+			var matchId = betSelector.parents('tr').attr('id');
+			
+			if (bet.betHome == "" || bet.betAway == "") {
+				betSelector.find('img.busy').remove();
+				showErrorMessage("Nie można wysłać typu. Nie wypełniono wszystkich pól.");
+				return false;
+			}
 
 			$.ajax({
 				url : settings.url + "/" + matchId + "/bet",
 				type : "PUT",
 				data : JSON.stringify(bet),
 				success : function(data) {
-					showSuccessMessage('Typ zapisany');
+					betSelector.find('img.busy').remove();
+					
 				},
 				error : function(data) {
 					showErrorMessage(data.responseText);
+					betSelector.find('img.busy').remove();
 				}
 			});
 
@@ -307,16 +348,15 @@
 
 		$.fn.setBetTimeout = function() {
 
-			var matchDate = new Date($(this).parents('div.row').find(
+			var matchDate = new Date($(this).parents('tr').find(
 					'.datetime').attr('data-datetime'));
 			var milliseconds = matchDate.getTime() - new Date().getTime();
-			var matchId = $(this).parents('div.row').attr('id');
+			var matchId = $(this).parents('tr').attr('id');
 
 			var stopBet = function() {
 
 				var betSelector = $('#' + matchId).find('div.bet');
-				betSelector
-						.html('<img src="resources/images/busy_30.gif">&nbsp;');
+				betSelector.html('<img src="resources/images/busy_30.gif">&nbsp;');
 
 				$.ajax({
 					url : settings.url + "/" + matchId,
@@ -336,23 +376,35 @@
 
 		};
 
+		selector.empty();
+		selector.html(busyHtml);
+		
 		$.ajax({
-			url : settings.url,
+			url : settings.url + '/all?status=' + settings.status,
 			success : function(data) {
 				selector.empty();
-				$.each(data, function(key, value) {
-					selector.append(getMatchHtml(value));
-				});
-				$('div.bet form').parent().each(function() {
-					$(this).setBetTimeout();
-				});
-				$('.other-bets').click(function() {
-					var id = $(this).parents('div.row').attr('id');
-					$('#match-bets').displayMatchBets(id);
-				});
-				$('.submit-bet').click(function() {
-					$(this).addBet();
-				});
+				if (data) {
+					$.each(data['matchEntry'], function(key, value) {
+						selector.append(getMatchHtml(value));
+					});
+					$('div.bet form').parent().each(function() {
+						$(this).setBetTimeout();
+					});
+					$('.other-bets').click(function() {
+						var id = $(this).parents('tr').attr('id');
+						$('#match-bets').displayMatchBets(id);
+					});
+					$('.submit-bet').click(function() {
+						$(this).parent().find('.busy').remove();
+						$(this).parent().append('<img class="busy" src="resources/images/busy_30.gif">');
+						$(this).addBet();
+					});
+					$('.numbers-only').keypress(function(e) {
+						if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+							return false;
+						}
+					});
+				}
 			},
 			error : function(data) {
 				showErrorMessage(data.responseText);
