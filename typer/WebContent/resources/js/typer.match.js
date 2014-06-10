@@ -7,7 +7,8 @@
 	var busyHtml = '<tr><td style="text-align: center"><img src="resources/images/busy_80.gif"></td></tr>';
 	var winnerBusyHtml = '<div style="text-align: center"><img src="resources/images/busy_80.gif"></div>';
 	var matchHtmlTemplate = '<tr id="ID_PLACEHOLDER"><td><div class="match-details"><div class="datetime" data-datetime="ORIGINAL_DATETIME_PLACEHOLDER">DATETIME_PLACEHOLDER</div><div class="group">GROUP_PLACEHOLDER</div><div class="stadium">STADIUM_PLACEHOLDER</div><div class="venue">VENUE_PLACEHOLDER</div></div></td><td><div class="home"><img class="flag" src="HOME_TEAM_FLAG_PLACEHOLDER"><span class="team-name">HOME_TEAM_NAME_PLACEHOLDER</span></div></td><td><div class="score"><span>SCORE_PLACEHOLDER</span></div></td><td><div class="away"><span class="team-name">AWAY_TEAM_NAME_PLACEHOLDER</span><img class="flag" src="AWAY_TEAM_FLAG_PLACEHOLDER"></div></td><td style="width: 250px">BET_PLACEHOLDER</td></tr>';
-	var betFutureTemplate = '<div class="bet"><form class="form-inline" role="form"><input type="text" class="form-control bet-input betHome numbers-only" value="BET_HOME_PLACEHOLDER"/><span class="bet">:</span><input type="text" class="form-control bet-input betAway numbers-only" value="BET_AWAY_PLACEHOLDER"/><button type="button" class="btn btn-primary submit-bet">Zapisz</button></form></div>';
+	var betFutureTemplate = '<div class="bet">BET_PLACEHOLDER<button type="button" class="btn btn-primary edit-bet">EDIT_BUTTON_NAME_PLACEHOLDER</button>&nbsp;</div>';
+	var betEditTemplate = '<div class="bet"><form class="form-inline" role="form"><input type="text" class="form-control bet-input betHome numbers-only" value="BET_HOME_PLACEHOLDER"/><span class="bet">:</span><input type="text" class="form-control bet-input betAway numbers-only" value="BET_AWAY_PLACEHOLDER"/><button type="button" class="btn btn-primary submit-bet">Zapisz</button></form></div>';
 	var betPastTemplate = '<div class="bet">BET_PLACEHOLDER<a href="javascript:void(0);" class="other-bets" data-toggle="modal" data-target="#match-bets">Wszystkie typy</a></div>';
 	var winnerBetFutureTemplate = '<div><div class="col-md-3"><div class="input-group"><input type="text" disabled class="form-control" value="ORIGINAL_BET_PLACEHOLDER"><div class="input-group-btn"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">&nbsp;<span class="caret"></span></button><ul id="team-list" class="dropdown-menu pull-right scrollable-menu">WINNER_LIST_PLACEHOLDER</ul></div></div></div><div class="col-md-2"><button type="button" class="btn btn-primary submit-winner-bet">Zapisz</button></div></div><div class="col-md-8" id="winner-bet-deadline" data-datetime="ORIGINAL_DEADLINE_PLACEHOLDER" style="font-size: 12px">Typ przyjmowany do: DEADLINE_PLACEHOLDER</div>';
 	var winnerBetPastTemplate = 'WINNER_PLACEHOLDER&nbsp;<span><a href="javascript:void(0);" class="other-bets" data-toggle="modal" data-target="#winner-bets">Wszystkie typy</a><span></div>';
@@ -51,7 +52,8 @@
 		'3' : '<span class="points label label-success">CONTENT_PLACEHOLDER</span>',
 		'1' : '<span class="points label label-info">CONTENT_PLACEHOLDER</span>',
 		'0' : '<span class="points label label-default">CONTENT_PLACEHOLDER</span>',
-		'undefined' : '<span class="points label label-warning">CONTENT_PLACEHOLDER</span>'
+		'undefined' : '<span class="points label label-warning">CONTENT_PLACEHOLDER</span>',
+		'null' : '<span class="points label label-warning">CONTENT_PLACEHOLDER</span>'
 	};
 
 	var showErrorMessage = function(message) {
@@ -249,18 +251,40 @@
 
 		};
 
-		var getBetHtml = function(matchEntry) {
+		var getBetHtml = function(matchEntry, isEdited) {
 
+			isEdited = typeof isEdited !== 'undefined' ? isEdited : false;
+			
 			var matchDate = new Date(matchEntry.dateTime);
 			var currentDate = new Date();
 
 			if (currentDate < matchDate) {
-				var html = betFutureTemplate;
-				return html.replace('BET_HOME_PLACEHOLDER',
-						matchEntry.betHome ? matchEntry.betHome : '').replace(
-						'BET_AWAY_PLACEHOLDER',
-						matchEntry.betAway ? matchEntry.betAway : '');
+				
+				if (isEdited) {
+					
+					var html = betEditTemplate;
+					return html.replace('BET_HOME_PLACEHOLDER',
+							matchEntry.betHome ? matchEntry.betHome : '').replace(
+							'BET_AWAY_PLACEHOLDER',
+							matchEntry.betAway ? matchEntry.betAway : '');
+					
+				} else {
+					
+					var html = betFutureTemplate;
+
+					if (!matchEntry.betHome || !matchEntry.betAway) {
+						return html.replace('BET_PLACEHOLDER', '').replace('EDIT_BUTTON_NAME_PLACEHOLDER', 'Dodaj');
+					}
+
+					var pointsTemplate = pointsTemplateMap[matchEntry.betPoints];
+					return html.replace('BET_PLACEHOLDER', pointsTemplate.replace(
+							'CONTENT_PLACEHOLDER', matchEntry.betHome + ':'
+									+ matchEntry.betAway)).replace('EDIT_BUTTON_NAME_PLACEHOLDER', 'Zmień');
+					
+				}
+
 			} else {
+				
 				var html = betPastTemplate;
 
 				if (!matchEntry.betHome || !matchEntry.betAway) {
@@ -272,7 +296,6 @@
 						'CONTENT_PLACEHOLDER', matchEntry.betHome + ':'
 								+ matchEntry.betAway));
 			}
-			;
 
 		};
 
@@ -301,7 +324,7 @@
 				success : function(data) {
 					selector.empty();
 					if (data) {
-						$.each(data['betEntry'], function(key, value) {
+						$.each(data, function(key, value) {
 							selector
 									.append('<tr><td>' + pointsTemplateMap[value.points].replace('CONTENT_PLACEHOLDER', ((value.betHome && value.betAway) ? value.betHome + ':'
 											+ value.betAway : '')) + '</td><td><div class="user">' + value.username
@@ -314,6 +337,20 @@
 				}
 			});
 
+		};
+		
+		$.fn.editBet = function(matchEntry) {
+			
+			var betSelector = $(this).parents('div.bet').parent();
+			betSelector.empty();
+			betSelector.append(getBetHtml(matchEntry, true));
+			
+			betSelector.find('.submit-bet').click(function() {
+				$(this).parent().find('.busy').remove();
+				$(this).parent().append('<img class="busy" src="resources/images/busy_30.gif">');
+				$(this).addBet();
+			});
+			
 		};
 
 		$.fn.addBet = function() {
@@ -336,7 +373,11 @@
 				data : JSON.stringify(bet),
 				success : function(data) {
 					betSelector.find('img.busy').remove();
-					
+					betSelector.empty();
+					betSelector.append(getBetHtml(data));
+					selector.find('tr#' + data.id).find('.edit-bet').click(function() {
+						$(this).editBet(data);
+					});
 				},
 				error : function(data) {
 					showErrorMessage(data.responseText);
@@ -384,8 +425,11 @@
 			success : function(data) {
 				selector.empty();
 				if (data) {
-					$.each(data['matchEntry'], function(key, value) {
+					$.each(data, function(key, value) {
 						selector.append(getMatchHtml(value));
+						selector.find('tr#' + value.id).find('.edit-bet').click(function() {
+							$(this).editBet(value);
+						});
 					});
 					$('div.bet form').parent().each(function() {
 						$(this).setBetTimeout();
@@ -393,11 +437,6 @@
 					$('.other-bets').click(function() {
 						var id = $(this).parents('tr').attr('id');
 						$('#match-bets').displayMatchBets(id);
-					});
-					$('.submit-bet').click(function() {
-						$(this).parent().find('.busy').remove();
-						$(this).parent().append('<img class="busy" src="resources/images/busy_30.gif">');
-						$(this).addBet();
 					});
 					$('.numbers-only').keypress(function(e) {
 						if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {

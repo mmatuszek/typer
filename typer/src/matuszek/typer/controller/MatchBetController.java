@@ -111,7 +111,7 @@ public class MatchBetController {
 	@PUT
 	@Path("/{id}/bet")
 	@Produces("application/json")
-	public BetEntry updateBet(@PathParam("id") Integer matchId,
+	public MatchEntry updateBet(@PathParam("id") Integer matchId,
 			@Context SecurityContext context, BetEntry betEntry) {
 
 		try {
@@ -130,7 +130,7 @@ public class MatchBetController {
 
 			dao.updateBet(bet);
 
-			return betEntry;
+			return MatchEntryFactory.createEntry(dao.getMatch(matchId), context.getUserPrincipal().getName());
 
 		} catch (WebApplicationException e) {
 			throw e;
