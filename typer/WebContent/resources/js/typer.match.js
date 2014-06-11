@@ -10,7 +10,8 @@
 	var betFutureTemplate = '<div class="bet">BET_PLACEHOLDER<button type="button" class="btn btn-primary edit-bet">EDIT_BUTTON_NAME_PLACEHOLDER</button>&nbsp;</div>';
 	var betEditTemplate = '<div class="bet"><form class="form-inline" role="form"><input type="text" class="form-control bet-input betHome numbers-only" value="BET_HOME_PLACEHOLDER"/><span class="bet">:</span><input type="text" class="form-control bet-input betAway numbers-only" value="BET_AWAY_PLACEHOLDER"/><button type="button" class="btn btn-primary submit-bet">Zapisz</button></form></div>';
 	var betPastTemplate = '<div class="bet">BET_PLACEHOLDER<a href="javascript:void(0);" class="other-bets" data-toggle="modal" data-target="#match-bets">Wszystkie typy</a></div>';
-	var winnerBetFutureTemplate = '<div><div class="col-md-3"><div class="input-group"><input type="text" disabled class="form-control" value="ORIGINAL_BET_PLACEHOLDER"><div class="input-group-btn"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">&nbsp;<span class="caret"></span></button><ul id="team-list" class="dropdown-menu pull-right scrollable-menu">WINNER_LIST_PLACEHOLDER</ul></div></div></div><div class="col-md-2"><button type="button" class="btn btn-primary submit-winner-bet">Zapisz</button></div></div><div class="col-md-8" id="winner-bet-deadline" data-datetime="ORIGINAL_DEADLINE_PLACEHOLDER" style="font-size: 12px">Typ przyjmowany do: DEADLINE_PLACEHOLDER</div>';
+	var winnerBetFutureTemplate ='WINNER_PLACEHOLDER&nbsp;<button type="button" class="btn btn-primary edit-winner-bet">EDIT_BUTTON_NAME_PLACEHOLDER</button></div>';
+	var winnerBetEditTemplate = '<div><div class="col-md-3"><div class="input-group"><input type="text" disabled class="form-control" value="ORIGINAL_BET_PLACEHOLDER"><div class="input-group-btn"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">&nbsp;<span class="caret"></span></button><ul id="team-list" class="dropdown-menu pull-right scrollable-menu">WINNER_LIST_PLACEHOLDER</ul></div></div></div><div class="col-md-2"><button type="button" class="btn btn-primary submit-winner-bet">Zapisz</button></div></div><div class="col-md-8" id="winner-bet-deadline" data-datetime="ORIGINAL_DEADLINE_PLACEHOLDER" style="font-size: 12px">Typ przyjmowany do: DEADLINE_PLACEHOLDER</div>';
 	var winnerBetPastTemplate = 'WINNER_PLACEHOLDER&nbsp;<span><a href="javascript:void(0);" class="other-bets" data-toggle="modal" data-target="#winner-bets">Wszystkie typy</a><span></div>';
 	var flagMap = {
 		'Chorwacja' : 'cro.png',
@@ -65,6 +66,12 @@
 		$('.alert').alert();
 
 	};
+	
+	var verifyResponse = function(response) {
+		if ((typeof response == 'string') && response.indexOf('<title>Logowanie</title>') >= 0) {
+			location.reload();
+		}
+	};
 
 	$.fn.addWinnerBetDropdown = function(options) {
 
@@ -78,10 +85,12 @@
 			});
 		};
 
-		var getBetHtml = function(data) {
+		var getBetHtml = function(data, isEdited) {
 
+			isEdited = typeof isEdited !== 'undefined' ? isEdited : false;
+			
 			var html = '';
-			var deadlineDate = new Date(data.deadline);
+			var deadlineDate = data.deadline == null ? null : new Date(data.deadline);
 			var currentDate = new Date();
 
 			if (data.winner) {
@@ -92,31 +101,46 @@
 						pointsTemplate.replace('CONTENT_PLACEHOLDER',
 								data.bet.name));
 
-			} else if (currentDate > deadlineDate) {
+			} else if (deadlineDate && currentDate > deadlineDate) {
 
 				html = winnerBetPastTemplate.replace('WINNER_PLACEHOLDER',
 						pointsTemplateMap['undefined'].replace(
 								'CONTENT_PLACEHOLDER', data.bet.name));
 
 			} else {
+				
+				if (isEdited) {
 
-				html = winnerBetFutureTemplate;
-
-				var teamListHtml = "";
-
-				$.each(data.teams, function(key, value) {
-					teamListHtml += '<li class="team"><a href="#">'
-							+ value.name + '</a></li>';
-				});
-
-				html = html.replace('WINNER_LIST_PLACEHOLDER', teamListHtml)
-						.replace('ORIGINAL_BET_PLACEHOLDER',
-								data.bet ? data.bet.name : '').replace(
-								'ORIGINAL_DEADLINE_PLACEHOLDER',
-								new Date(data['deadline'])).replace(
-								'DEADLINE_PLACEHOLDER',
-								$.formatDateTime('yy-mm-dd hh:ii', new Date(
-										data.deadline)));
+					html = winnerBetEditTemplate;
+	
+					var teamListHtml = "";
+	
+					$.each(data.teams, function(key, value) {
+						teamListHtml += '<li class="team"><a href="javascript:void(0);">'
+								+ value.name + '</a></li>';
+					});
+	
+					html = html.replace('WINNER_LIST_PLACEHOLDER', teamListHtml)
+							.replace('ORIGINAL_BET_PLACEHOLDER',
+									data.bet ? data.bet.name : '').replace(
+									'ORIGINAL_DEADLINE_PLACEHOLDER',
+									new Date(data['deadline'])).replace(
+									'DEADLINE_PLACEHOLDER',
+									$.formatDateTime('yy-mm-dd hh:ii', new Date(
+											data.deadline)));
+				} else {
+					
+					if (data.bet && data.bet.name) {
+						html = winnerBetFutureTemplate.replace('WINNER_PLACEHOLDER',
+								pointsTemplateMap['undefined'].replace(
+										'CONTENT_PLACEHOLDER', data.bet.name)).replace('EDIT_BUTTON_NAME_PLACEHOLDER', 'Zmień');
+					} else {
+						html = winnerBetFutureTemplate.replace('WINNER_PLACEHOLDER',
+								pointsTemplateMap['undefined'].replace(
+										'CONTENT_PLACEHOLDER', '')).replace('EDIT_BUTTON_NAME_PLACEHOLDER', 'Dodaj');
+					}
+					
+				}
 
 			}
 
@@ -134,6 +158,7 @@
 				url : settings.url + "/all",
 				type : "GET",
 				success : function(data) {
+					verifyResponse(data);
 					selector.empty();
 					$.each(data, function(key, value) {
 						selector.append('<tr><td>' + pointsTemplateMap[value.points].replace('CONTENT_PLACEHOLDER', (value.teamName ? value.teamName : '') + '</td><td><div class="user">' + value.username
@@ -146,18 +171,48 @@
 			});
 
 		};
+		
+		$.fn.editWinnerBet = function(data) {
+			
+			var betSelector = $('#winner-bet');
+			betSelector.empty();
+			betSelector.append(getBetHtml(data, true));
+			
+			$('.submit-winner-bet').click(function() {
+				$(this).parent().find('.busy').remove();
+				$(this).parent().append('<img class="busy" src="resources/images/busy_30.gif">');
+				$(this).saveWinnerBet();
+
+			});
+			$('.submit-winner-bet').setBetTimeout();
+			$('li.team').addSelectAction();
+			
+		};
 
 		$.fn.saveWinnerBet = function() {
 
 			var bet = new Object();
 			bet.name = $('#winner-bet input').val();
+			
+			if (bet.name == "") {
+				betSelector.find('img.busy').remove();
+				showErrorMessage("Nie można wysłać typu. Nie wprowadzono nawy drużyny.");
+				return false;
+			}
 
 			$.ajax({
 				url : settings.url,
 				type : "PUT",
 				data : JSON.stringify(bet),
 				success : function(data) {
+					verifyResponse(data);
 					$('#winner-bet .busy').remove();
+					$('#winner-bet').empty();
+					$('#winner-bet').append(getBetHtml(data));
+					$('.edit-winner-bet').setBetTimeout();
+					$('.edit-winner-bet').click(function() {
+						$(this).editWinnerBet(data);
+					});
 				},
 				error : function(data) {
 					$('#winner-bet .busy').remove();
@@ -182,7 +237,11 @@
 					url : settings.url,
 					type : "GET",
 					success : function(data) {
+						verifyResponse(data);
 						betSelector.parent().html(getBetHtml(data));
+						$('#winner-bet .other-bets').click(function() {
+							$('#winner-bets').displayWinnerBets();
+						});
 					}
 				});
 			};
@@ -205,13 +264,10 @@
 				selector.empty();
 				var html = getBetHtml(data);
 				selector.append(html);
-				$('li.team').addSelectAction();
-				$('.submit-winner-bet').click(function() {
-					$(this).parent().find('.busy').remove();
-					$(this).parent().append('<img class="busy" src="resources/images/busy_30.gif">');
-					$(this).saveWinnerBet();
+				$('.edit-winner-bet').click(function() {
+					$(this).editWinnerBet(data);
 				});
-				$('.submit-winner-bet').setBetTimeout();
+				$('.edit-winner-bet').setBetTimeout();
 				$('#winner-bet .other-bets').click(function() {
 					$('#winner-bets').displayWinnerBets();
 				});
@@ -272,7 +328,7 @@
 					
 					var html = betFutureTemplate;
 
-					if (!matchEntry.betHome || !matchEntry.betAway) {
+					if (matchEntry.betHome == null || matchEntry.betAway == null) {
 						return html.replace('BET_PLACEHOLDER', '').replace('EDIT_BUTTON_NAME_PLACEHOLDER', 'Dodaj');
 					}
 
@@ -287,7 +343,7 @@
 				
 				var html = betPastTemplate;
 
-				if (!matchEntry.betHome || !matchEntry.betAway) {
+				if (matchEntry.betHome == null || matchEntry.betAway == null) {
 					return html.replace('BET_PLACEHOLDER', '');
 				}
 
@@ -322,6 +378,7 @@
 				url : settings.url + "/" + matchId + "/bet/all",
 				type : "GET",
 				success : function(data) {
+					verifyResponse(data);
 					selector.empty();
 					if (data) {
 						$.each(data, function(key, value) {
@@ -372,6 +429,7 @@
 				type : "PUT",
 				data : JSON.stringify(bet),
 				success : function(data) {
+					verifyResponse(data);
 					betSelector.find('img.busy').remove();
 					betSelector.empty();
 					betSelector.append(getBetHtml(data));
@@ -431,7 +489,7 @@
 							$(this).editBet(value);
 						});
 					});
-					$('div.bet form').parent().each(function() {
+					$('.edit-bet').parents('div.bet').each(function() {
 						$(this).setBetTimeout();
 					});
 					$('.other-bets').click(function() {

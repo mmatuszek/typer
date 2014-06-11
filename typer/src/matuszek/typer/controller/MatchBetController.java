@@ -101,6 +101,7 @@ public class MatchBetController {
 		} catch (WebApplicationException e) {
 			throw e;
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new WebApplicationException(Response
 					.status(Response.Status.INTERNAL_SERVER_ERROR)
 					.entity("Błąd: " + e.getLocalizedMessage()).build());
@@ -135,6 +136,7 @@ public class MatchBetController {
 		} catch (WebApplicationException e) {
 			throw e;
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new WebApplicationException(Response
 					.status(Response.Status.INTERNAL_SERVER_ERROR)
 					.entity("Błąd: " + e.getLocalizedMessage()).build());

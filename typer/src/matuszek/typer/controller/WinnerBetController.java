@@ -52,10 +52,11 @@ public class WinnerBetController {
 
 			return new WinnerBetData().bet(teamBet).deadline(deadline)
 					.teams(teams).winner(winner);
-			
+
 		} catch (WebApplicationException e) {
 			throw e;
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new WebApplicationException(Response
 					.status(Response.Status.INTERNAL_SERVER_ERROR)
 					.entity("Błąd: " + e.getLocalizedMessage()).build());
@@ -96,6 +97,7 @@ public class WinnerBetController {
 		} catch (WebApplicationException e) {
 			throw e;
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new WebApplicationException(Response
 					.status(Response.Status.INTERNAL_SERVER_ERROR)
 					.entity("Błąd: " + e.getLocalizedMessage()).build());
@@ -105,7 +107,7 @@ public class WinnerBetController {
 
 	@PUT
 	@Produces("application/json")
-	public TeamEntry updateWinnerBet(@Context SecurityContext ctx,
+	public WinnerBetData updateWinnerBet(@Context SecurityContext ctx,
 			TeamEntry team) {
 
 		try {
@@ -117,13 +119,13 @@ public class WinnerBetController {
 								.build());
 			}
 
-			dao.updateBet(WinnerBetFactory.create(team, ctx.getUserPrincipal()
-					.getName()));
-			return team;
+			dao.updateBet(WinnerBetFactory.create(team, ctx.getUserPrincipal().getName()));
+			return getWinnerBet(ctx);
 
 		} catch (WebApplicationException e) {
 			throw e;
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new WebApplicationException(Response
 					.status(Response.Status.INTERNAL_SERVER_ERROR)
 					.entity("Błąd: " + e.getLocalizedMessage()).build());
