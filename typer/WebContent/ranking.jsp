@@ -52,7 +52,7 @@
 			<nav class="collapse navbar-collapse bs-navbar-collapse"
 				role="navigation">
 				<ul class="nav navbar-nav">
-					<li><a href="">Typowanie</a></li>
+					<li><a href="index.jsp">Typowanie</a></li>
 					<li class="active"><a href="ranking">Ranking</a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
