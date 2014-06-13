@@ -1,4 +1,5 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -51,8 +52,8 @@
 			<nav class="collapse navbar-collapse bs-navbar-collapse"
 				role="navigation">
 				<ul class="nav navbar-nav">
-					<li class="active"><a href="">Typowanie</a></li>
-					<li><a href="ranking">Ranking</a></li>
+					<li><a href="">Typowanie</a></li>
+					<li class="active"><a href="ranking">Ranking</a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 					<li class="dropdown"><a href="#" data-toggle="dropdown"
@@ -72,9 +73,8 @@
 				<img src="resources/images/fuleco.png" style="height: 200px" />
 			</div>
 			<div class="col-md-8" id="banner-text">
-				<h1>Typowanie</h1>
-				<p>Wytypuj wyniki
-					meczów oraz zwycięzcę turnieju. Zobacz jak typowali inni.</p>
+				<h1>Ranking</h1>
+				<p>Aktualna punktacja uczestników zabawy</p>
 			</div>
 			<div class="col-md-2" id="cup">
 				<img src="resources/images/cup.png" style="height: 200px" />
@@ -82,76 +82,35 @@
 		</div>
 	</div>
 
-	<div id="bet-tabs" class="container">
+	<div class="container">
 		<div id="messages"></div>
-		<ul class="nav nav-tabs">
-			<li class="active"><a id="future-tab" href="#future">Zaplanowane</a></li>
-			<li><a id="current-tab" href="#current">Trwające</a></li>
-			<li><a id="finished-tab" href="#finished">Zakończone</a></li>
-			<li><a id="winner-tab" href="#winner">Mistrz</a></li>
-		</ul>
-		<div id="bet-tab-content" class="tab-content">
-			<div id="future" class="tab-pane fade active in">
-				<table class="table-borderless" id="future-matches">
-				</table>
-			</div>
-			<div id="current" class="tab-pane fade">
-				<table class="table-borderless" id="current-matches">
-				</table>
-			</div>
-			<div id="finished" class="tab-pane fade">
-				<table class="table-borderless" id="finished-matches">
-				</table>
-			</div>
-			<div id="winner" class="tab-pane fade">
-				<div id="winner-bet">
-					<div style="text-align: center">
-						<img src="resources/images/busy_80.gif">
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="modal fade" id="match-bets" tabindex="-1" role="dialog"
-		aria-labelledby="myModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal"
-						aria-hidden="true">&times;</button>
-					<h4 class="modal-title" id="myModalLabel">Typy wszystkich
-						graczy</h4>
-				</div>
-				<div class="modal-body">
-					<table class="table-borderless">
-						<tr>
-							<td style="text-align: center"><img
-								src="resources/images/busy_80.gif"></td>
-						</tr>
-					</table>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="modal fade" id="winner-bets" tabindex="-1" role="dialog"
-		aria-labelledby="myModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal"
-						aria-hidden="true">&times;</button>
-					<h4 class="modal-title" id="myModalLabel">Mistrzostwo Świata -
-						Typy</h4>
-				</div>
-				<div class="modal-body">
-					<table class="table-borderless">
-						<tr>
-							<td style="text-align: center"><img
-								src="resources/images/busy_80.gif"></td>
-						</tr>
-					</table>
-				</div>
-			</div>
+		<table class="table" id="ranking">
+		<thead>
+			<tr>
+				<th style="width: 50px">Pozycja</th>
+				<th>Imię i nazwisko</th>
+				<th>Login</th>
+				<th style="width: 100px">Trafione wyniki</th>
+				<th style="width: 100px">Trafione zwycięstwa/remisy</th>
+				<th style="width: 100px">Trafiony mistrz</th>
+				<th style="width: 100px">Punkty</th>
+			</tr>
+		</thead>
+		<tbody>
+			<c:forEach items="${ranking}" var="entry" varStatus="position" >
+				<tr>
+					<td<c:if test="${position.index == 0 }"> class="success"</c:if>>${position.index + 1}</td>
+					<td<c:if test="${position.index == 0 }"> class="success"</c:if>>${entry.userName }</td>
+					<td<c:if test="${position.index == 0 }"> class="success"</c:if>>${entry.userLogin }</td>
+					<td<c:if test="${position.index == 0 }"> class="success"</c:if>>${entry.exactScorePoints }</td>
+					<td<c:if test="${position.index == 0 }"> class="success"</c:if>>${entry.wldScorePoints }</td>
+					<td<c:if test="${position.index == 0 }"> class="success"</c:if>>${entry.winnerPoints }</td>
+					<td<c:if test="${position.index == 0 }"> class="success"</c:if>><span class="label label-success totalScore">${entry.totalPoints }</span></td>
+				</tr>
+			</c:forEach>
+		</tbody>
+		</table>
+		
 		</div>
 	</div>
 	<!-- /container -->

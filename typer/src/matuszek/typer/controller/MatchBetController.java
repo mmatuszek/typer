@@ -1,8 +1,9 @@
 package matuszek.typer.controller;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -89,7 +90,7 @@ public class MatchBetController {
 
 			Match match = dao.getMatch(matchId);
 
-			if (match.getDateTime().after(new Date())) {
+			if (match.getDateTime().after(Calendar.getInstance(TimeZone.getTimeZone("GMT")).getTime())) {
 				throw new WebApplicationException(
 						Response.status(Response.Status.BAD_REQUEST)
 								.entity("Typy innych graczy są dostępne dopiero po rozpoczęciu meczu")
@@ -119,7 +120,7 @@ public class MatchBetController {
 
 			Match match = dao.getMatch(matchId);
 
-			if (match.getDateTime().before(new Date())) {
+			if (match.getDateTime().before(Calendar.getInstance(TimeZone.getTimeZone("GMT")).getTime())) {
 				throw new WebApplicationException(Response
 						.status(Response.Status.BAD_REQUEST)
 						.entity("Typ odrzucony. Mecz już się rozpoczął.")

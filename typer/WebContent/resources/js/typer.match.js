@@ -3,7 +3,9 @@
 	$.ajaxSetup({
 		contentType : "application/json; charset=utf-8"
 	});
-
+	
+	var timeZoneSuffix = 'Z';
+	
 	var busyHtml = '<tr><td style="text-align: center"><img src="resources/images/busy_80.gif"></td></tr>';
 	var winnerBusyHtml = '<div style="text-align: center"><img src="resources/images/busy_80.gif"></div>';
 	var matchHtmlTemplate = '<tr id="ID_PLACEHOLDER"><td><div class="match-details"><div class="datetime" data-datetime="ORIGINAL_DATETIME_PLACEHOLDER">DATETIME_PLACEHOLDER</div><div class="group">GROUP_PLACEHOLDER</div><div class="stadium">STADIUM_PLACEHOLDER</div><div class="venue">VENUE_PLACEHOLDER</div></div></td><td><div class="home"><img class="flag" src="HOME_TEAM_FLAG_PLACEHOLDER"><span class="team-name">HOME_TEAM_NAME_PLACEHOLDER</span></div></td><td><div class="score"><span>SCORE_PLACEHOLDER</span></div></td><td><div class="away"><span class="team-name">AWAY_TEAM_NAME_PLACEHOLDER</span><img class="flag" src="AWAY_TEAM_FLAG_PLACEHOLDER"></div></td><td style="width: 250px">BET_PLACEHOLDER</td></tr>';
@@ -90,7 +92,7 @@
 			isEdited = typeof isEdited !== 'undefined' ? isEdited : false;
 			
 			var html = '';
-			var deadlineDate = data.deadline == null ? null : new Date(data.deadline);
+			var deadlineDate = data.deadline == null ? null : new Date(data.deadline + timeZoneSuffix);
 			var currentDate = new Date();
 
 			if (data.winner) {
@@ -124,10 +126,10 @@
 							.replace('ORIGINAL_BET_PLACEHOLDER',
 									data.bet ? data.bet.name : '').replace(
 									'ORIGINAL_DEADLINE_PLACEHOLDER',
-									new Date(data['deadline'])).replace(
+									new Date(data['deadline'] + timeZoneSuffix)).replace(
 									'DEADLINE_PLACEHOLDER',
 									$.formatDateTime('yy-mm-dd hh:ii', new Date(
-											data.deadline)));
+											data.deadline + timeZoneSuffix)));
 				} else {
 					
 					if (data.bet && data.bet.name) {
@@ -261,6 +263,7 @@
 		$.ajax({
 			url : settings.url,
 			success : function(data) {
+				verifyResponse(data);
 				selector.empty();
 				var html = getBetHtml(data);
 				selector.append(html);
@@ -290,10 +293,10 @@
 
 			return html.replace('ID_PLACEHOLDER', matchEntry.id).replace(
 					'ORIGINAL_DATETIME_PLACEHOLDER',
-					new Date(matchEntry.dateTime)).replace(
+					new Date(matchEntry.dateTime + timeZoneSuffix)).replace(
 					'DATETIME_PLACEHOLDER',
 					$.formatDateTime('yy-mm-dd hh:ii', new Date(
-							matchEntry.dateTime))).replace('GROUP_PLACEHOLDER',
+							matchEntry.dateTime + timeZoneSuffix))).replace('GROUP_PLACEHOLDER',
 					matchEntry.group).replace('STADIUM_PLACEHOLDER',
 					matchEntry.stadium).replace('VENUE_PLACEHOLDER',
 					matchEntry.city).replace('HOME_TEAM_FLAG_PLACEHOLDER',
@@ -311,7 +314,7 @@
 
 			isEdited = typeof isEdited !== 'undefined' ? isEdited : false;
 			
-			var matchDate = new Date(matchEntry.dateTime);
+			var matchDate = new Date(matchEntry.dateTime + timeZoneSuffix);
 			var currentDate = new Date();
 
 			if (currentDate < matchDate) {
@@ -320,9 +323,9 @@
 					
 					var html = betEditTemplate;
 					return html.replace('BET_HOME_PLACEHOLDER',
-							matchEntry.betHome ? matchEntry.betHome : '').replace(
+							matchEntry.betHome != null ? matchEntry.betHome : '').replace(
 							'BET_AWAY_PLACEHOLDER',
-							matchEntry.betAway ? matchEntry.betAway : '');
+							matchEntry.betAway != null ? matchEntry.betAway : '');
 					
 				} else {
 					
@@ -358,7 +361,7 @@
 		var getScoreHtml = function(matchEntry) {
 
 			if (!matchEntry.scoreHome || !matchEntry.scoreAway) {
-				var matchDate = new Date(matchEntry.dateTime);
+				var matchDate = new Date(matchEntry.dateTime + timeZoneSuffix);
 				var minutes = matchDate.getMinutes();
 				return matchDate.getHours() + ':'
 						+ (minutes < 10 ? '0' + minutes : minutes);
@@ -383,7 +386,7 @@
 					if (data) {
 						$.each(data, function(key, value) {
 							selector
-									.append('<tr><td>' + pointsTemplateMap[value.points].replace('CONTENT_PLACEHOLDER', ((value.betHome && value.betAway) ? value.betHome + ':'
+									.append('<tr><td>' + pointsTemplateMap[value.points].replace('CONTENT_PLACEHOLDER', ((value.betHome != null && value.betAway != null) ? value.betHome + ':'
 											+ value.betAway : '')) + '</td><td><div class="user">' + value.username
 											+ '</div></td><td><div class="user">' + value.user + '</div></tr>');
 						});
@@ -453,17 +456,8 @@
 			var matchId = $(this).parents('tr').attr('id');
 
 			var stopBet = function() {
-
-				var betSelector = $('#' + matchId).find('div.bet');
-				betSelector.html('<img src="resources/images/busy_30.gif">&nbsp;');
-
-				$.ajax({
-					url : settings.url + "/" + matchId,
-					type : "GET",
-					success : function(data) {
-						betSelector.parent().html(getBetHtml(data));
-					}
-				});
+				var selector = $('#' + matchId);
+				selector.remove();
 			};
 
 			if (milliseconds > 0) {
@@ -481,6 +475,7 @@
 		$.ajax({
 			url : settings.url + '/all?status=' + settings.status,
 			success : function(data) {
+				verifyResponse(data);
 				selector.empty();
 				if (data) {
 					$.each(data, function(key, value) {
@@ -489,9 +484,11 @@
 							$(this).editBet(value);
 						});
 					});
-					$('.edit-bet').parents('div.bet').each(function() {
-						$(this).setBetTimeout();
-					});
+					if (settings.status == 'future') {
+						$('.edit-bet').parents('div.bet').each(function() {
+							$(this).setBetTimeout();
+						});
+					}
 					$('.other-bets').click(function() {
 						var id = $(this).parents('tr').attr('id');
 						$('#match-bets').displayMatchBets(id);

@@ -52,10 +52,10 @@ public class StandingEntryFactory {
 
 		totalPoints = winnerPoints + wldScorePoints + exactScorePoints;
 
-		return new StandingEntry().user(user.getUsername())
-				.exactScorePoints(exactScorePoints)
-				.wldScorePoints(wldScorePoints).winnerPoints(winnerPoints)
-				.totalPoints(totalPoints);
+		return new StandingEntry().userLogin(user.getUsername())
+				.exactScorePoints(exactScorePoints/3)
+				.wldScorePoints(wldScorePoints).winnerPoints(winnerP != null ? 1 : 0)
+				.totalPoints(totalPoints).userName(user.getFirstName() + " " + user.getLastName());
 
 	}
 }

@@ -1,8 +1,10 @@
 package matuszek.typer.controller;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -71,7 +73,7 @@ public class WinnerBetController {
 
 		try {
 
-			if (dao.getWinner().getDeadline().after(new Date())) {
+			if (dao.getWinner().getDeadline().after(Calendar.getInstance(TimeZone.getTimeZone("GMT")).getTime())) {
 				throw new WebApplicationException(
 						Response.status(Response.Status.BAD_REQUEST)
 								.entity("Typy innych graczy dostępne po rozpoczęciu turnieju.")
@@ -112,7 +114,7 @@ public class WinnerBetController {
 
 		try {
 
-			if (dao.getWinner().getDeadline().before(new Date())) {
+			if (dao.getWinner().getDeadline().before(Calendar.getInstance(TimeZone.getTimeZone("GMT")).getTime())) {
 				throw new WebApplicationException(
 						Response.status(Response.Status.BAD_REQUEST)
 								.entity("Typ odrzucony. Termin przyjmowania tego zakładu minął.")

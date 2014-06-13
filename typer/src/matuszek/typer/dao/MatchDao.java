@@ -1,10 +1,11 @@
 package matuszek.typer.dao;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 
-import javax.ejb.Stateful;
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -12,7 +13,7 @@ import javax.persistence.TypedQuery;
 import matuszek.typer.dao.model.Bet;
 import matuszek.typer.dao.model.Match;
 
-@Stateful
+@Stateless
 public class MatchDao {
 
 	@PersistenceContext(unitName = "Typer")
@@ -20,10 +21,12 @@ public class MatchDao {
 
 	public List<Match> getMatches(String status) {
 
+		em.clear();
+		
 		em.getEntityManagerFactory().getCache().evictAll();
 		TypedQuery<Match> query;
 		
-		String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+		String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance(TimeZone.getTimeZone("GMT")).getTime());
 
 		if (status.equals("past")) {
 			String strQuery = "SELECT m FROM Match m WHERE m.dateTime < '%s' AND m.scoreHome IS NOT NULL AND m.scoreAway IS NOT NULL";
@@ -44,6 +47,8 @@ public class MatchDao {
 	
 	public Match getMatch(Integer matchId) {
 
+		em.clear();
+		
 		em.getEntityManagerFactory().getCache().evictAll();
 		
 		TypedQuery<Match> query = em.createQuery(
@@ -56,6 +61,8 @@ public class MatchDao {
 
 	public void updateBet(Bet bet) {
 
+		em.clear();
+		
 		TypedQuery<Bet> query = em
 				.createQuery(
 						"SELECT b FROM Bet b WHERE b.user = :user AND b.matchId = :matchId",

@@ -171,3 +171,11 @@ button.submit-bet {
 	font-weight: bold;
 	margin-right: 100px;	
 }
+
+#ranking th, td {
+	font-size: 14px;
+}
+
+.totalScore {
+	font-size: 14px;
+}
