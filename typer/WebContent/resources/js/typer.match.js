@@ -360,7 +360,7 @@
 
 		var getScoreHtml = function(matchEntry) {
 
-			if (!matchEntry.scoreHome || !matchEntry.scoreAway) {
+			if (matchEntry.scoreHome == null || matchEntry.scoreAway == null) {
 				var matchDate = new Date(matchEntry.dateTime + timeZoneSuffix);
 				var minutes = matchDate.getMinutes();
 				return matchDate.getHours() + ':'
