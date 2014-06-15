@@ -19,8 +19,8 @@
 <!-- jQuery -->
 <script type="text/javascript" src="resources/js/jquery.min.js"></script>
 <script type="text/javascript" src="resources/js/bootstrap.min.js"></script>
-<script type="text/javascript"
-	src="resources/js/jquery.formatDateTime.min.js"></script>
+<script type="text/javascript" src="resources/js/jquery.formatDateTime.min.js"></script>
+<script type="text/javascript" src="resources/js/moment.min.js"></script>
 
 <!-- Custom JS -->
 <script type="text/javascript" src="resources/js/typer.match.js"></script>

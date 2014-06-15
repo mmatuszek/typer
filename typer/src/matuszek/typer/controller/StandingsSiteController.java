@@ -28,8 +28,6 @@ public class StandingsSiteController extends HttpServlet {
 	private static final long serialVersionUID = -1132472635899799228L;
 
 	@EJB
-	private MatchDao matchDao;
-	@EJB
 	private WinnerDao winnerDao;
 	@EJB
 	private UserDao userDao;

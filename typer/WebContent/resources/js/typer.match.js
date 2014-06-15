@@ -92,8 +92,8 @@
 			isEdited = typeof isEdited !== 'undefined' ? isEdited : false;
 			
 			var html = '';
-			var deadlineDate = data.deadline == null ? null : new Date(data.deadline + timeZoneSuffix);
-			var currentDate = new Date();
+			var deadlineDate = data.deadline == null ? null : new Date(moment.utc(data.deadline));
+			var currentDate = new Date(moment.utc());
 
 			if (data.winner) {
 
@@ -126,10 +126,10 @@
 							.replace('ORIGINAL_BET_PLACEHOLDER',
 									data.bet ? data.bet.name : '').replace(
 									'ORIGINAL_DEADLINE_PLACEHOLDER',
-									new Date(data['deadline'] + timeZoneSuffix)).replace(
+									new Date(moment.utc(data['deadline']))).replace(
 									'DEADLINE_PLACEHOLDER',
-									$.formatDateTime('yy-mm-dd hh:ii', new Date(
-											data.deadline + timeZoneSuffix)));
+									$.formatDateTime('yy-mm-dd hh:ii', new Date(moment.utc(
+											data.deadline))));
 				} else {
 					
 					if (data.bet && data.bet.name) {
@@ -225,9 +225,9 @@
 
 		$.fn.setBetTimeout = function() {
 
-			var deadline = new Date($('#winner-bet-deadline').attr(
-					'data-datetime'));
-			var milliseconds = deadline.getTime() - new Date().getTime();
+			var deadline = new Date(moment.utc($('#winner-bet-deadline').attr(
+					'data-datetime')));
+			var milliseconds = deadline.getTime() - new Date(moment.utc()).getTime();
 
 			var stopBet = function() {
 
@@ -293,10 +293,10 @@
 
 			return html.replace('ID_PLACEHOLDER', matchEntry.id).replace(
 					'ORIGINAL_DATETIME_PLACEHOLDER',
-					new Date(matchEntry.dateTime + timeZoneSuffix)).replace(
+					new Date(moment.utc(matchEntry.dateTime))).replace(
 					'DATETIME_PLACEHOLDER',
-					$.formatDateTime('yy-mm-dd hh:ii', new Date(
-							matchEntry.dateTime + timeZoneSuffix))).replace('GROUP_PLACEHOLDER',
+					$.formatDateTime('yy-mm-dd hh:ii', new Date(moment.utc(
+							matchEntry.dateTime)))).replace('GROUP_PLACEHOLDER',
 					matchEntry.group).replace('STADIUM_PLACEHOLDER',
 					matchEntry.stadium).replace('VENUE_PLACEHOLDER',
 					matchEntry.city).replace('HOME_TEAM_FLAG_PLACEHOLDER',
@@ -314,8 +314,8 @@
 
 			isEdited = typeof isEdited !== 'undefined' ? isEdited : false;
 			
-			var matchDate = new Date(matchEntry.dateTime + timeZoneSuffix);
-			var currentDate = new Date();
+			var matchDate = new Date(moment.utc(matchEntry.dateTime));
+			var currentDate = new Date(moment.utc());
 
 			if (currentDate < matchDate) {
 				
@@ -361,7 +361,7 @@
 		var getScoreHtml = function(matchEntry) {
 
 			if (matchEntry.scoreHome == null || matchEntry.scoreAway == null) {
-				var matchDate = new Date(matchEntry.dateTime + timeZoneSuffix);
+				var matchDate = new Date(moment.utc(matchEntry.dateTime));
 				var minutes = matchDate.getMinutes();
 				return matchDate.getHours() + ':'
 						+ (minutes < 10 ? '0' + minutes : minutes);
@@ -411,6 +411,12 @@
 				$(this).addBet();
 			});
 			
+			betSelector.find('.numbers-only').keypress(function(e) {
+				if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+					return false;
+				}
+			});
+			
 		};
 
 		$.fn.addBet = function() {
@@ -450,9 +456,9 @@
 
 		$.fn.setBetTimeout = function() {
 
-			var matchDate = new Date($(this).parents('tr').find(
-					'.datetime').attr('data-datetime'));
-			var milliseconds = matchDate.getTime() - new Date().getTime();
+			var matchDate = new Date(moment.utc($(this).parents('tr').find(
+					'.datetime').attr('data-datetime')));
+			var milliseconds = matchDate.getTime() - new Date(moment.utc()).getTime();
 			var matchId = $(this).parents('tr').attr('id');
 
 			var stopBet = function() {
@@ -493,11 +499,7 @@
 						var id = $(this).parents('tr').attr('id');
 						$('#match-bets').displayMatchBets(id);
 					});
-					$('.numbers-only').keypress(function(e) {
-						if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
-							return false;
-						}
-					});
+					
 				}
 			},
 			error : function(data) {

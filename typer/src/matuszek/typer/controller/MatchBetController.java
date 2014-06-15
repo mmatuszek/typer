@@ -115,8 +115,15 @@ public class MatchBetController {
 	@Produces("application/json")
 	public MatchEntry updateBet(@PathParam("id") Integer matchId,
 			@Context SecurityContext context, BetEntry betEntry) {
-
+		
 		try {
+			
+			if (betEntry.getBetAway() == null || betEntry.getBetHome() == null) {
+				throw new WebApplicationException(Response
+					.status(Response.Status.BAD_REQUEST)
+					.entity("Nieprawidłowy wynik: " + betEntry.getBetHome() + ":" + betEntry.getBetAway())
+					.build());
+			}
 
 			Match match = dao.getMatch(matchId);
 

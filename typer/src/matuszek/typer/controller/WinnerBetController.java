@@ -113,6 +113,13 @@ public class WinnerBetController {
 			TeamEntry team) {
 
 		try {
+			
+			if (team == null || team.getName() == null) {
+				throw new WebApplicationException(Response
+						.status(Response.Status.BAD_REQUEST)
+						.entity("Nieprawidłowa nazwa zespołu: " + team)
+						.build());
+			}
 
 			if (dao.getWinner().getDeadline().before(Calendar.getInstance(TimeZone.getTimeZone("GMT")).getTime())) {
 				throw new WebApplicationException(
