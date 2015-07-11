@@ -105,9 +105,11 @@
 
 			} else if (deadlineDate && currentDate > deadlineDate) {
 
+				var bet = data.bet == null ? '' : data.bet.name;
+			
 				html = winnerBetPastTemplate.replace('WINNER_PLACEHOLDER',
 						pointsTemplateMap['undefined'].replace(
-								'CONTENT_PLACEHOLDER', data.bet.name));
+								'CONTENT_PLACEHOLDER', bet));
 
 			} else {
 				

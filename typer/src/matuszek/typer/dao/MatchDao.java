@@ -29,13 +29,13 @@ public class MatchDao {
 		String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance(TimeZone.getTimeZone("GMT")).getTime());
 
 		if (status.equals("past")) {
-			String strQuery = "SELECT m FROM Match m WHERE m.dateTime < '%s' AND m.scoreHome IS NOT NULL AND m.scoreAway IS NOT NULL";
+			String strQuery = "SELECT m FROM Match m WHERE m.dateTime < '%s' AND m.scoreHome IS NOT NULL AND m.scoreAway IS NOT NULL ORDER BY m.dateTime DESC";
 			query = em.createQuery(String.format(strQuery, date), Match.class);
 		} else if (status.equals("current")) {
-			String strQuery = "SELECT m FROM Match m WHERE m.dateTime < '%s' AND m.scoreHome IS NULL AND m.scoreAway IS NULL";
+			String strQuery = "SELECT m FROM Match m WHERE m.dateTime < '%s' AND m.scoreHome IS NULL AND m.scoreAway IS NULL ORDER BY m.dateTime ASC";
 			query = em.createQuery(String.format(strQuery, date), Match.class);
 		} else if (status.equals("future")) {
-			String strQuery = "SELECT m FROM Match m WHERE m.dateTime >= '%s'";
+			String strQuery = "SELECT m FROM Match m WHERE m.dateTime >= '%s' ORDER BY m.dateTime ASC";
 			query = em.createQuery(String.format(strQuery, date), Match.class);
 		} else {
 			query = em.createQuery("SELECT m FROM Match m", Match.class);
